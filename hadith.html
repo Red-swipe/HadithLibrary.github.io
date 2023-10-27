@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hadith Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('well.jpeg');
+            background-size: 1536px 864px;
+            background-attachment: fixed;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #hadithContainer {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #searchInput {
+            width: 85%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            color: #000;
+            border-bottom: 1px solid #000;
+        }
+
+        #searchResults {
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .hadithItem {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            background: #fff;
+        }
+
+        .hadithItem:hover {
+            background: #f2f2f2;
+        }
+
+        #clearButton {
+            width: 15%;
+            background: #e6e6e6;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #footer {
+            text-align: left;
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 14px;
+        }
+
+        .footerLink {
+            display: block;
+            text-decoration: none;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+            color: #000; 
+        }
+
+        .footerLink:hover {
+            background: #75A7A8;
+        }
+
+        #quranCom {
+            background: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hadith Search</h1>
+    <div id="hadithContainer">
+        <input type="text" id="searchInput" placeholder="Search Hadith...">
+        <button id="clearButton">Clear</button>
+        <div id="searchResults"></div>
+    </div>
+
+    <div id="footer">
+        <a class="footerLink" href="https://quran.com" target="_blank" id="quranCom">Quran.com</a>
+        <a class="footerLink" href="https://thaqalayn.net" target="_blank" style="background: #E29912">Thaqalayn.net</a>
+        <a class="footerLink" href="https://sunnah.com" target="_blank" style="background: #75A7A8">Sunnah.com</a>
+    </div>
+
+    <script>
+
+        const hadiths = [
+            "1. A man stayed in the house of Hazrat Aisha and had a wet dream, [Muslim:290, ibnmajah:538, Muslim:288a, abudawud:371, tirmidhi:116]",
+            "2. Hazrat Aisha Scraping Off so and so With Her Hands [Muslim:290, ibnmajah:538, Muslim:288a, abudawud:371, tirmidhi:116, muslim:228b] ",
+            "3. A man ruins Hazrat Aisha's blanket by so and so [ibnmajah:538, tirmidhi:116]",
+            "4. A man was in The House with Hazrat Aisha Alone [bukhari:2647, mulim:1455a, ibnmajah:1945, bukhari:5102]",
+            "5. Prophet s.a.w referts to Hazrat Aisha as an object [muslim:350]",
+            "6. Surah Tahreem was for Hz Aisha and Hz Hafsa [bukhari:5191, muslim:1479a, bukhari:2468, nasai:3958, muslim:1479e. ahmad:339]",
+            "7. Hazrat Aisha was a test [bukhari:7100, bukhari:3772, bukhari:7101]",
+            "8. Hazrat Aisha thinks Allah doesnt satisfy the Prophet s.a.w [muslim:1464a]",
+            "9. Hazrat Umar wants Hazrat Aisha and Hazrat Hafsa to be Humiliated [bukhari:4913]",
+            "10. Rasulallah s.a.w sends a curse on Aisha [muslim:310]",
+            "11. Muawiyah Ordering Sa’ad To Curse Imam Ali A.S [muslim:2404, tirmidhi:3724]",
+            "12. Muawiyah insulting Imam Ali [ibnmajah:121]",
+            "13. Umar Thinks He Knows More Than A Prophet(s.a.w) [bukhari:1269, bukhari:146, bukhari:4483, muslim:2400a]",
+            "14. Sayeda Fatima S.A died angry with hazrat abu bakr [bukhari:3092, bukhari:4240, muslim:1759a, tirmidhi:1609, bukhari:6725]",
+            "15. Sayeda Fatima Buried In Secret [bukhari:4240, muslim:1759a]",
+            "16. Rasulallah s.a.w didnt get to write his will [bukhari:114]",
+            "17. There will be Evil Caliphs and events after Rasulallah (S.a.w) [muslim:1847b, bukhari:7084, bukhari:7057,muslim:1855b, nasai:4022]",
+        	"18. Ansar recognizing a hypocrite by their hatred for Imam Ali a.s [Jami at-Tirmidhi 3717]",
+            "19. Rasulallah (s.a.w) cursing hazrat aisha [Muslim:310]",
+            "20. Khalid bin walid showing hate towards Imam Ali A.S [Bukhari:4350]",
+            "21. Rasulallah (s.a.w) telling whoever loves Imam Hassan and Hussain A.S, there parents, should be on his level [Jami at-Tirmidhi 3733]",
+            "22. Rasulallah (s.a.w) telling the caliphate will end after 12 Caliphs who will be from the quraish [Muslim: 1821a]",
+            "23. Hazrat Abu bakr arguing and not giving Fadak back to Bibi Fatima S.A [Bukhari:3092, Bukhari:3093]",
+            "24. Ibn Ziyad (L.A) poked the head of Imam Hussain A.S with a stick [bukhari:3748]",
+            "25. Prophet (S.a.w) carrying Al-Hasan on his shoulder",
+            "26. Hazrat Abu bakr Carring Imam Hassan A.S [bukhari:3750]",
+            "27. None resembled the Prophet (ﷺ) more than Al-Hasan bin `Ali did [bukhari:3752]",
+            "28. The Prophet (s.a.w) praying for ibn abbas (r.a) [bukhari:3756]",
+            "29. ",
+            "30. ",
+            "40. ",
+            "41. ",
+            "42. ",
+            "43. ",
+            "44. ",
+            "45. ",
+            "46. ",
+            "47. ",
+            "48. ",
+            "49. ",
+            "50. ",
+        ];
+
+        const searchInput = document.getElementById("searchInput");
+        const clearButton = document.getElementById("clearButton");
+        const searchResults = document.getElementById("searchResults");
+
+        // Function to search for hadith
+        function searchHadith(query) {
+            searchResults.innerHTML = ""; // Clear previous results
+            query = query.toLowerCase();
+
+            for (let i = 0; i < hadiths.length; i++) {
+                const hadith = hadiths[i].toLowerCase();
+                if (hadith.includes(query)) {
+                    const resultItem = document.createElement("div");
+                    resultItem.classList.add("hadithItem");
+                    resultItem.textContent = hadith;
+                    resultItem.addEventListener("click", () => {
+                        alert(hadith); // Show the full hadith in an alert
+                    });
+                    searchResults.appendChild(resultItem);
+                }
+            }
+        }
+        // Event listener for input changes
+        searchInput.addEventListener("input", () => {
+            searchHadith(searchInput.value);
+        });
+
+        // Event listener for the Clear button
+        clearButton.addEventListener("click", () => {
+            searchInput.value = ""; // Clear the search input
+            searchResults.innerHTML = ""; // Clear the search results
+        });
+    </script>
+</body>
+</html>
